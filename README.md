@@ -17,7 +17,8 @@ Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manual
                 <string>com.googleusercontent.apps.YOUR-CLIENT-ID</string>
             </array>
         </dict>
-    </array>```
+    </array>
+    ```
 4. From any `UIViewController` start the authorization workflow by calling `GAppAuth.shared.authorize`.
 
 #### Feel free to add any remarks or open up a PR.
