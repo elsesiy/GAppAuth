@@ -1,0 +1,6 @@
+# Metafiles
+.DS_Store
+Thumbs.db
+
+# Build output
+.build
