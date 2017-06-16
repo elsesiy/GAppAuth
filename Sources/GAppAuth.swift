@@ -29,7 +29,7 @@ import GTMAppAuth
 /// Wrapper class that provides convenient AppAuth functionality with Google Services.
 /// Set ClientId, RedirectUri and call respective methods where you need them.
 /// Requires dependency to GTMAppAuth, see: https://github.com/google/GTMAppAuth (install via cocoapods or drop into your project).
-class GAppAuth: NSObject {
+public final class GAppAuth: NSObject {
     
     // MARK: - Static declarations
     
@@ -47,7 +47,7 @@ class GAppAuth: NSObject {
     // MARK: - Public vars
     
     // If the authorization wasn't successful, use can listen to this callback if interested
-    var errorCallback: ((OIDAuthState, Error) -> Void)?
+    public var errorCallback: ((OIDAuthState, Error) -> Void)?
     
     // MARK: - Private vars
     
@@ -62,7 +62,7 @@ class GAppAuth: NSObject {
     // MARK: - Singleton
     
     private static var singletonInstance: GAppAuth?
-    static var shared: GAppAuth {
+    public static var shared: GAppAuth {
         if singletonInstance == nil {
             singletonInstance = GAppAuth()
         }
@@ -77,7 +77,7 @@ class GAppAuth: NSObject {
     // MARK: - APIs
     
     /// Add another authorization realm to the current set of scopes, i.e. `kGTLAuthScopeDrive` for Google Drive API.
-    func appendAuthorizationRealm(_ scope: String) {
+    public func appendAuthorizationRealm(_ scope: String) {
         if !scopes.contains(scope) {
             scopes.append(scope)
         }
@@ -87,7 +87,7 @@ class GAppAuth: NSObject {
     ///
     /// - parameter presentingViewController: The UIViewController that starts the workflow.
     /// - parameter callback: A completion callback to be used for further processing.
-    func authorize(in presentingViewController: UIViewController, callback: ((Bool) -> Void)?) throws {
+    public func authorize(in presentingViewController: UIViewController, callback: ((Bool) -> Void)?) throws {
         guard GAppAuth.RedirectUri != "" else {
             throw GAppAuthError.plistValueEmpty("The value for RedirectUri seems to be wrong, did you forget to set it up?")
         }
@@ -136,7 +136,7 @@ class GAppAuth: NSObject {
     /// - parameter url: The url that's used to enter the app.
     /// - parameter callback: A completion callback to be used for further processing.
     /// - returns: true, if the authorization workflow can be continued with the provided url, else false
-    func continueAuthorization(with url: URL, callback: ((Bool) -> Void)?) -> Bool {
+    public func continueAuthorization(with url: URL, callback: ((Bool) -> Void)?) -> Bool {
         if let authFlow = currentAuthorizationFlow {
             
             if authFlow.resumeAuthorizationFlow(with: url) {
@@ -157,7 +157,7 @@ class GAppAuth: NSObject {
     /// Determines the current authorization state.
     ///
     /// - returns: true, if there is a valid authorization available, else false
-    func isAuthorized() -> Bool {
+    public func isAuthorized() -> Bool {
         if let auth = authorization {
             return auth.canAuthorize()
         } else {
@@ -166,7 +166,7 @@ class GAppAuth: NSObject {
     }
     
     /// Load any existing authorization from the key chain on app start.
-    func retrieveExistingAuthorizationState() {
+    public func retrieveExistingAuthorizationState() {
         let keychainItemName = GAppAuth.KeychainItemName
         if let authorization: GTMAppAuthFetcherAuthorization = GTMAppAuthFetcherAuthorization(fromKeychainForName: keychainItemName) {
             setAuthorization(authorization)
@@ -174,10 +174,15 @@ class GAppAuth: NSObject {
     }
     
     /// Resets the authorization state and removes any stored information.
-    func resetAuthorizationState() {
+    public func resetAuthorizationState() {
         GTMAppAuthFetcherAuthorization.removeFromKeychain(forName: GAppAuth.KeychainItemName)
         // As keychain and cached authorization token are meant to be in sync, we also have to:
         setAuthorization(nil)
+    }
+    
+    /// Query the current authorization state
+    public func getCurrentAuthorization() -> GTMAppAuthFetcherAuthorization? {
+        return authorization
     }
     
     // MARK: - Internal functions
@@ -212,7 +217,7 @@ class GAppAuth: NSObject {
 
 extension GAppAuth : OIDAuthStateChangeDelegate {
     
-    func didChange(_ state: OIDAuthState) {
+    public func didChange(_ state: OIDAuthState) {
         // Do whatever you want if you need this information
     }
     
@@ -223,7 +228,7 @@ extension GAppAuth : OIDAuthStateChangeDelegate {
 extension GAppAuth : OIDAuthStateErrorDelegate {
     
     // Error callback
-    func authState(_ state: OIDAuthState, didEncounterAuthorizationError error: Error) {
+    public func authState(_ state: OIDAuthState, didEncounterAuthorizationError error: Error) {
         NSLog("Google authorization error occured, notify user: \(error)")
         if currentAuthorizationFlow != nil {
             currentAuthorizationFlow = nil

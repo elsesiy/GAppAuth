@@ -37,6 +37,11 @@ Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manual
     </dict>
   </array>
 ```
-5. From any `UIViewController` start the authorization workflow by calling `GAppAuth.shared.authorize`.
+5. In order to authorize for any Google Service, you'd need to append the respective scope to the authorization request via:
+`GAppAuth.shared.appendAuthorizationRealm` (i.e. kGTLRAuthScopeDrive for Google Drive access).
+6. From any `UIViewController` start the authorization workflow by calling `GAppAuth.shared.authorize`.
+7. You might want to retrieve any existing authorization upon start of the app which can be done via `GAppAuth.shared.retrieveExistingAuthorizationState`.
+
+##### A good spot for 5. and 7. is the AppDelegate's `didFinishLaunchingWithOptions`.
 
 #### Feel free to add any remarks or open up a PR.

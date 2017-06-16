@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "GAppAuth"
-  s.version      = "1.0.0"
+  s.version      = "1.1.0"
   s.summary      = "Convenient Wrapper for AppAuth with Google Services written in Swift 3 (iOS)."
   s.homepage     = "https://github.com/elsesiy/GAppAuth"
   s.license      = "BSD-2-Clause"
