@@ -17,13 +17,13 @@ Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manual
 2. Enable Google APIs as desired.
 3. Add ClientId and RedirectUri to your Info.plist:
 ```
-	<key>GAppAuth</key>
-	<dict>
-		<key>RedirectUri</key>
-		<string>com.googleusercontent.apps.YOUR-CLIENT-ID:/oauthredirect</string>
-		<key>ClientId</key>
-		<string>YOUR-CLIENT-ID.apps.googleusercontent.com</string>
-	</dict>
+  <key>GAppAuth</key>
+  <dict>
+    <key>RedirectUri</key>
+    <string>com.googleusercontent.apps.YOUR-CLIENT-ID:/oauthredirect</string>
+    <key>ClientId</key>
+    <string>YOUR-CLIENT-ID.apps.googleusercontent.com</string>
+  </dict>
 ```
 4. Add Custom URL-Scheme to your project:
 ```
