@@ -27,16 +27,22 @@ import AppAuth
 import GTMAppAuth
 
 /// Wrapper class that provides convenient AppAuth functionality with Google Services.
-/// Set ClientID, RedirectURI and call respective methods where you need them.
+/// Set ClientId, RedirectUri and call respective methods where you need them.
 /// Requires dependency to GTMAppAuth, see: https://github.com/google/GTMAppAuth (install via cocoapods or drop into your project).
 class GAppAuth: NSObject {
     
     // MARK: - Static declarations
     
-    static let KeychainPrefix   = Bundle.main.bundleIdentifier!
-    static let KeychainItemName = KeychainPrefix + "GoogleAuthorization"
-    fileprivate static let ClientID = "YOUR-CLIENT-ID.apps.googleusercontent.com"
-    fileprivate static let RedirectURI = "com.googleusercontent.apps.YOUR-CLIENT-ID:/oauthredirect"
+    private static let KeychainPrefix   = Bundle.main.bundleIdentifier!
+    private static let KeychainItemName = KeychainPrefix + "GoogleAuthorization"
+    private static let GAppAuthCredentials = Bundle.main.object(forInfoDictionaryKey: "GAppAuth") as! NSDictionary
+    
+    private static var ClientId: String {
+        return GAppAuthCredentials.value(forKey: "ClientId") as? String ?? ""
+    }
+    private static var RedirectUri: String {
+        return GAppAuthCredentials.value(forKey: "RedirectUri") as? String ?? ""
+    }
     
     // MARK: - Public vars
     
@@ -45,7 +51,7 @@ class GAppAuth: NSObject {
     
     // MARK: - Private vars
     
-    private(set) var authorization: GTMAppAuthFetcherAuthorization? = nil
+    private(set) var authorization: GTMAppAuthFetcherAuthorization?
     
     // Auth scopes
     private var scopes = [OIDScopeOpenID, OIDScopeProfile]
@@ -55,7 +61,7 @@ class GAppAuth: NSObject {
     
     // MARK: - Singleton
     
-    static private var singletonInstance: GAppAuth?
+    private static var singletonInstance: GAppAuth?
     static var shared: GAppAuth {
         if singletonInstance == nil {
             singletonInstance = GAppAuth()
@@ -81,13 +87,20 @@ class GAppAuth: NSObject {
     ///
     /// - parameter presentingViewController: The UIViewController that starts the workflow.
     /// - parameter callback: A completion callback to be used for further processing.
-    func authorize(in presentingViewController: UIViewController, callback: ((Bool) -> Void)?) {
+    func authorize(in presentingViewController: UIViewController, callback: ((Bool) -> Void)?) throws {
+        guard GAppAuth.RedirectUri != "" else {
+            throw GAppAuthError.plistValueEmpty("The value for RedirectUri seems to be wrong, did you forget to set it up?")
+        }
+        
+        guard GAppAuth.ClientId != "" else {
+            throw GAppAuthError.plistValueEmpty("The value for ClientId seems to be wrong, did you forget to set it up?")
+        }
+        
         let issuer = URL(string: "https://accounts.google.com")!
-        let redirectURI = URL(string: GAppAuth.RedirectURI)!
+        let redirectURI = URL(string: GAppAuth.RedirectUri)!
         
         // Search for endpoints
-        OIDAuthorizationService.discoverConfiguration(forIssuer: issuer) {
-            (configuration: OIDServiceConfiguration?, error: Error?) in
+        OIDAuthorizationService.discoverConfiguration(forIssuer: issuer) {(configuration: OIDServiceConfiguration?, error: Error?) in
             
             if configuration == nil {
                 self.setAuthorization(nil)
@@ -95,11 +108,10 @@ class GAppAuth: NSObject {
             }
             
             // Create auth request
-            let request: OIDAuthorizationRequest = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientID, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
+            let request: OIDAuthorizationRequest = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
             
             // Store auth flow to be resumed after app reentry, serialize response
-            self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: presentingViewController) {
-                (authState: OIDAuthState?, error: Error?) in
+            self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: presentingViewController) {(authState: OIDAuthState?, error: Error?) in
                 if let authState = authState {
                     let authorization = GTMAppAuthFetcherAuthorization(authState: authState)
                     self.setAuthorization(authorization)
@@ -126,7 +138,7 @@ class GAppAuth: NSObject {
     /// - returns: true, if the authorization workflow can be continued with the provided url, else false
     func continueAuthorization(with url: URL, callback: ((Bool) -> Void)?) -> Bool {
         if let authFlow = currentAuthorizationFlow {
-
+            
             if authFlow.resumeAuthorizationFlow(with: url) {
                 currentAuthorizationFlow = nil
                 if let callback = callback {
@@ -193,7 +205,7 @@ class GAppAuth: NSObject {
             GTMAppAuthFetcherAuthorization.removeFromKeychain(forName: keychainItemName)
         }
     }
-
+    
 }
 
 // MARK: - OIDAuthStateChangeDelegate
@@ -222,4 +234,9 @@ extension GAppAuth : OIDAuthStateErrorDelegate {
         }
     }
     
+}
+
+// MARK: - Error
+fileprivate enum GAppAuthError: Error {
+    case plistValueEmpty(String)
 }
