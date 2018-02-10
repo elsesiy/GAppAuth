@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "GAppAuth"
-  s.version      = "1.1.0"
+  s.version      = "1.2.0"
   s.summary      = "Convenient Wrapper for AppAuth with Google Services written in Swift 3 (iOS)."
   s.homepage     = "https://github.com/elsesiy/GAppAuth"
   s.license      = "BSD-2-Clause"
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/elsesiy/GAppAuth.git", :tag => s.version }
   s.source_files  = "Sources/GAppAuth.swift"
   #s.tvos.deployment_target = '9.0'
-  #s.osx.deployment_target = '10.8'
-  s.ios.deployment_target = "8.0"
-  s.dependency "GTMAppAuth"
+  #s.osx.deployment_target = '10.9'
+  s.ios.deployment_target = "7.0"
+  s.dependency "GTMAppAuth", '~> 0.7.0'
 end

@@ -1,4 +1,5 @@
-# GAppAuth
+GAppAuth
+=====
 
 This is a drop-in class to handle AppAuth with Google Services (currently supporting only iOS).
 
@@ -41,6 +42,8 @@ Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manual
 `GAppAuth.shared.appendAuthorizationRealm` (i.e. kGTLRAuthScopeDrive for Google Drive access).
 6. From any `UIViewController` start the authorization workflow by calling `GAppAuth.shared.authorize`.
 7. You might want to retrieve any existing authorization upon start of the app which can be done via `GAppAuth.shared.retrieveExistingAuthorizationState`.
+8. There are two closures you can monitor in order to be notified about any changes `stateChangeCallback` or errors `errorCallback`.
+**Note:** In case of a revoked access by the user, both callbacks will be called.
 
 ##### A good spot for 5. and 7. is the AppDelegate's `didFinishLaunchingWithOptions`.
 
