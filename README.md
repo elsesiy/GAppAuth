@@ -1,6 +1,8 @@
 GAppAuth
 =====
 
+![pod](https://img.shields.io/cocoapods/v/GAppAuth.svg)
+
 This is a drop-in class to handle AppAuth with Google Services (currently supporting only iOS).
 
 ## Installation via cocoapods
