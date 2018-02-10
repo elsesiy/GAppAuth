@@ -2,6 +2,8 @@ GAppAuth
 =====
 
 ![pod](https://img.shields.io/cocoapods/v/GAppAuth.svg)
+[![License](https://img.shields.io/cocoapods/l/GAppAuth.svg)](http://cocoapods.org/pods/GAppAuth)
+[![Twitter](https://img.shields.io/badge/twitter-@elsesiy-blue.svg)](http://twitter.com/elsesiy)
 
 This is a drop-in class to handle AppAuth with Google Services (currently supporting only iOS).
 
