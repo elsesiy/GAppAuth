@@ -28,7 +28,7 @@ import GTMAppAuth
 
 /// Wrapper class that provides convenient AppAuth functionality with Google Services.
 /// Set ClientId, RedirectUri and call respective methods where you need them.
-/// Requires dependency to GTMAppAuth, see: https://github.com/google/GTMAppAuth (install via cocoapods or drop into your project).
+/// Requires dependency to GTMAppAuth, see: https://github.com/google/GTMAppAuth
 public final class GAppAuth: NSObject {
     
     // MARK: - Static declarations
@@ -46,8 +46,11 @@ public final class GAppAuth: NSObject {
     
     // MARK: - Public vars
     
-    // If the authorization wasn't successful, use can listen to this callback if interested
+    // Authorization unsuccessful, subscribe if you're interested
     public var errorCallback: ((OIDAuthState, Error) -> Void)?
+    
+    // Authorization changed, subscribe if you're interested
+    public var stateChangeCallback: ((OIDAuthState) -> Void)?
     
     // MARK: - Private vars
     
@@ -57,7 +60,7 @@ public final class GAppAuth: NSObject {
     private var scopes = [OIDScopeOpenID, OIDScopeProfile]
     
     // Used in continueAuthorization(with:callback:) in order to resume the authorization flow after app reentry
-    fileprivate var currentAuthorizationFlow: OIDAuthorizationFlowSession?
+    private var currentAuthorizationFlow: OIDAuthorizationFlowSession?
     
     // MARK: - Singleton
     
@@ -108,23 +111,26 @@ public final class GAppAuth: NSObject {
             }
             
             // Create auth request
-            let request: OIDAuthorizationRequest = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
+            let request = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
             
             // Store auth flow to be resumed after app reentry, serialize response
             self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: presentingViewController) {(authState: OIDAuthState?, error: Error?) in
+                var response = false
                 if let authState = authState {
+                    
                     let authorization = GTMAppAuthFetcherAuthorization(authState: authState)
                     self.setAuthorization(authorization)
-                    
-                    if let callback = callback {
-                        callback(true)
-                    }
+                    response = true
                     
                 } else {
                     self.setAuthorization(nil)
                     if let error = error {
                         NSLog("Authorization error: \(error.localizedDescription)")
                     }
+                }
+                
+                if let callback = callback {
+                    callback(response)
                 }
             }
         }
@@ -137,38 +143,35 @@ public final class GAppAuth: NSObject {
     /// - parameter callback: A completion callback to be used for further processing.
     /// - returns: true, if the authorization workflow can be continued with the provided url, else false
     public func continueAuthorization(with url: URL, callback: ((Bool) -> Void)?) -> Bool {
+        var response = false
         if let authFlow = currentAuthorizationFlow {
             
             if authFlow.resumeAuthorizationFlow(with: url) {
                 currentAuthorizationFlow = nil
-                if let callback = callback {
-                    callback(true)
-                }
+                response = true
             } else {
                 NSLog("Couldn't resume authorization flow!")
             }
-            return true
-        } else {
-            return false
         }
         
+        if let callback = callback {
+            callback(response)
+        }
+        
+        return response
     }
     
     /// Determines the current authorization state.
     ///
     /// - returns: true, if there is a valid authorization available, else false
     public func isAuthorized() -> Bool {
-        if let auth = authorization {
-            return auth.canAuthorize()
-        } else {
-            return false
-        }
+        return authorization != nil ? authorization!.canAuthorize() : false
     }
     
     /// Load any existing authorization from the key chain on app start.
     public func retrieveExistingAuthorizationState() {
         let keychainItemName = GAppAuth.KeychainItemName
-        if let authorization: GTMAppAuthFetcherAuthorization = GTMAppAuthFetcherAuthorization(fromKeychainForName: keychainItemName) {
+        if let authorization = GTMAppAuthFetcherAuthorization(fromKeychainForName: keychainItemName) {
             setAuthorization(authorization)
         }
     }
@@ -181,32 +184,34 @@ public final class GAppAuth: NSObject {
     }
     
     /// Query the current authorization state
-    public func getCurrentAuthorization() -> GTMAppAuthFetcherAuthorization? {
-        return authorization
-    }
+    public func getCurrentAuthorization() -> GTMAppAuthFetcherAuthorization? { return authorization }
     
     // MARK: - Internal functions
     
     /// Internal: Store the authorization.
-    fileprivate func setAuthorization(_ authorization: GTMAppAuthFetcherAuthorization?) {
-        if self.authorization == nil || !self.authorization!.isEqual(authorization) {
-            self.authorization = authorization
-            serializeAuthorizationState()
+    private func setAuthorization(_ authorization: GTMAppAuthFetcherAuthorization?) {
+        guard self.authorization == nil || !self.authorization!.isEqual(authorization) else { return }
+        
+        self.authorization = authorization
+
+        if self.authorization != nil {
+            self.authorization!.authState.errorDelegate = self
+            self.authorization!.authState.stateChangeDelegate = self
         }
+        
+        serializeAuthorizationState()
     }
     
     /// Internal: Save the authorization result from the workflow.
     private func serializeAuthorizationState() {
-        guard let authorization = authorization else {
-            NSLog("No authorization available which can be saved.")
-            return
-        }
+        // No authorization available which can be saved
+        guard let authorization = authorization else { return }
         
         let keychainItemName = GAppAuth.KeychainItemName
         if authorization.canAuthorize() {
             GTMAppAuthFetcherAuthorization.save(authorization, toKeychainForName: keychainItemName)
         } else {
-            NSLog("Remove existing authorization state")
+            // Remove existing authorization state
             GTMAppAuthFetcherAuthorization.removeFromKeychain(forName: keychainItemName)
         }
     }
@@ -215,33 +220,39 @@ public final class GAppAuth: NSObject {
 
 // MARK: - OIDAuthStateChangeDelegate
 
-extension GAppAuth : OIDAuthStateChangeDelegate {
+extension GAppAuth: OIDAuthStateChangeDelegate {
     
     public func didChange(_ state: OIDAuthState) {
-        // Do whatever you want if you need this information
+        guard self.authorization != nil else { return }
+        
+        let authorization = GTMAppAuthFetcherAuthorization(authState: state)
+        self.setAuthorization(authorization)
+        
+        if let stateChangeCallback = stateChangeCallback {
+            stateChangeCallback(state)
+        }
     }
     
 }
 
 // MARK: - OIDAuthStateErrorDelegate
 
-extension GAppAuth : OIDAuthStateErrorDelegate {
+extension GAppAuth: OIDAuthStateErrorDelegate {
     
     // Error callback
     public func authState(_ state: OIDAuthState, didEncounterAuthorizationError error: Error) {
-        NSLog("Google authorization error occured, notify user: \(error)")
-        if currentAuthorizationFlow != nil {
-            currentAuthorizationFlow = nil
-            setAuthorization(nil)
-            if let errorCallback = errorCallback {
-                errorCallback(state, error)
-            }
+        guard self.authorization != nil else { return }
+
+        currentAuthorizationFlow = nil
+        setAuthorization(nil)
+        if let errorCallback = errorCallback {
+            errorCallback(state, error)
         }
     }
     
 }
 
 // MARK: - Error
-fileprivate enum GAppAuthError: Error {
+private enum GAppAuthError: Error {
     case plistValueEmpty(String)
 }
