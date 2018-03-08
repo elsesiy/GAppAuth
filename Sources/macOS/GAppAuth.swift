@@ -85,12 +85,12 @@ public final class GAppAuth: NSObject {
             scopes.append(scope)
         }
     }
-    
+
     /// Starts the authorization flow.
     ///
-    /// - parameter presentingViewController: The UIViewController that starts the workflow.
     /// - parameter callback: A completion callback to be used for further processing.
-    public func authorize(in presentingViewController: UIViewController, callback: ((Bool) -> Void)?) throws {
+    @available(OSX 10.9, *)
+    public func authorize(callback: ((Bool) -> Void)?) throws {
         guard GAppAuth.RedirectUri != "" else {
             throw GAppAuthError.plistValueEmpty("The value for RedirectUri seems to be wrong, did you forget to set it up?")
         }
@@ -114,7 +114,7 @@ public final class GAppAuth: NSObject {
             let request = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
             
             // Store auth flow to be resumed after app reentry, serialize response
-            self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: presentingViewController) {(authState: OIDAuthState?, error: Error?) in
+            self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request) {(authState: OIDAuthState?, error: Error?) in
                 var response = false
                 if let authState = authState {
                     
@@ -253,6 +253,6 @@ extension GAppAuth: OIDAuthStateErrorDelegate {
 }
 
 // MARK: - Error
-private enum GAppAuthError: Error {
+public enum GAppAuthError: Error {
     case plistValueEmpty(String)
 }
