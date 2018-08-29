@@ -40,6 +40,11 @@ public final class GAppAuth: NSObject {
     private static var ClientId: String {
         return GAppAuthCredentials.value(forKey: "ClientId") as? String ?? ""
     }
+    
+    private static var ClientSecret: String {
+        return GAppAuthCredentials.value(forKey: "ClientSecret") as? String ?? ""
+    }
+    
     private static var RedirectUri: String {
         return GAppAuthCredentials.value(forKey: "RedirectUri") as? String ?? ""
     }
@@ -85,7 +90,7 @@ public final class GAppAuth: NSObject {
             scopes.append(scope)
         }
     }
-
+    
     /// Starts the authorization flow.
     ///
     /// - parameter callback: A completion callback to be used for further processing.
@@ -111,7 +116,7 @@ public final class GAppAuth: NSObject {
             }
             
             // Create auth request
-            let request = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
+            let request = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, clientSecret: GAppAuth.ClientSecret, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
             
             // Store auth flow to be resumed after app reentry, serialize response
             self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request) {(authState: OIDAuthState?, error: Error?) in
@@ -193,7 +198,7 @@ public final class GAppAuth: NSObject {
         guard self.authorization == nil || !self.authorization!.isEqual(authorization) else { return }
         
         self.authorization = authorization
-
+        
         if self.authorization != nil {
             self.authorization!.authState.errorDelegate = self
             self.authorization!.authState.stateChangeDelegate = self
@@ -242,7 +247,7 @@ extension GAppAuth: OIDAuthStateErrorDelegate {
     // Error callback
     public func authState(_ state: OIDAuthState, didEncounterAuthorizationError error: Error) {
         guard self.authorization != nil else { return }
-
+        
         currentAuthorizationFlow = nil
         setAuthorization(nil)
         if let errorCallback = errorCallback {
