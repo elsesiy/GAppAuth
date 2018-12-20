@@ -23,8 +23,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
-import AppAuth
-import GTMAppAuth
+@_exported import AppAuth
+@_exported import GTMAppAuth
 
 /// Wrapper class that provides convenient AppAuth functionality with Google Services.
 /// Set ClientId, RedirectUri and call respective methods where you need them.
@@ -65,7 +65,7 @@ public final class GAppAuth: NSObject {
     private var scopes = [OIDScopeOpenID, OIDScopeProfile]
     
     // Used in continueAuthorization(with:callback:) in order to resume the authorization flow after app reentry
-    private var currentAuthorizationFlow: OIDAuthorizationFlowSession?
+    private var currentAuthorizationFlow: OIDExternalUserAgentSession?
     
     // MARK: - Singleton
     
@@ -151,7 +151,7 @@ public final class GAppAuth: NSObject {
         var response = false
         if let authFlow = currentAuthorizationFlow {
             
-            if authFlow.resumeAuthorizationFlow(with: url) {
+            if authFlow.resumeExternalUserAgentFlow(with: url) {
                 currentAuthorizationFlow = nil
                 response = true
             } else {
