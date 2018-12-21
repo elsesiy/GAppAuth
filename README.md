@@ -20,7 +20,7 @@ The transitive dependency to `GTMAppAuth` is added automatically.
 Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manually to your project directory. Add `GAppAuth.swift` to your project and set-up you project as follows to use AppAuth with Google Services.
 
 ### iOS
-1. Setup your project (iOS) at https://console.developers.google.com to retrieve ClientID and iOS scheme URL.
+1. Setup your project (APIs & Services -> Credentials -> Create Credentials -> OAuth Client ID -> iOS) at https://console.developers.google.com to retrieve ClientID and iOS scheme URL.
 2. Enable Google APIs as desired.
 3. Add ClientId and RedirectUri to your Info.plist:
 ```
@@ -34,7 +34,7 @@ Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manual
 ```
 
 ### macOS
-1. Setup your project (macOS) at https://console.developers.google.com to retrieve ClientID and ClientSecret.
+1. Setup your project (APIs & Services -> Credentials -> Create Credentials -> OAuth Client ID -> Other) at https://console.developers.google.com to retrieve ClientID and ClientSecret.
 2. Enable Google APIs as desired.
 3. Add ClientId, ClientSecret RedirectUri to your Info.plist:
 ```
@@ -48,6 +48,7 @@ Add `GTMAppAuth` dependency to your Podfile (Cocoapods) or copy the files manual
     <string>YOUR-SECRET</string>
 </dict>
 ```
+**Note:** Make sure Sandboxing is turned off or properly configured, otherwise it's not possible to open the Browser window.
 
 ### General
 4. Add Custom URL-Scheme to your project:
