@@ -2,7 +2,6 @@ GAppAuth
 =====
 
 ![pod](https://img.shields.io/cocoapods/v/GAppAuth.svg)
-![dependency](https://img.shields.io/cocoapods/v/GTMAppAuth.svg)
 [![License](https://img.shields.io/cocoapods/l/GAppAuth.svg)](http://cocoapods.org/pods/GAppAuth)
 [![Twitter](https://img.shields.io/badge/twitter-@elsesiy-blue.svg)](http://twitter.com/elsesiy)
 
