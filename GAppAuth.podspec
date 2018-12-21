@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.social_media_url   = 'http://twitter.com/elsesiy'
   s.platforms = { :ios => "8.0", :osx => "10.9" }
   s.source       = { :git => 'https://github.com/elsesiy/GAppAuth.git', :tag => s.version }
-  s.swift_version = '4.0'
+  s.swift_version = '4.2'
   #s.tvos.deployment_target = '9.0'
 
   # MacOS
