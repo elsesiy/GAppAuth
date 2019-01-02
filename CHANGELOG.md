@@ -1,5 +1,24 @@
 # Change Log
 
+## [Unreleased](https://github.com/elsesiy/GAppAuth/tree/HEAD)
+
+[Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.3.0...HEAD)
+
+**Closed issues:**
+
+- Support for Mac OSX? [\#3](https://github.com/elsesiy/GAppAuth/issues/3)
+
+## [1.3.0](https://github.com/elsesiy/GAppAuth/tree/1.3.0) (2018-12-21)
+[Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.2.0...1.3.0)
+
+**Closed issues:**
+
+- Google not redirecting back to my app [\#4](https://github.com/elsesiy/GAppAuth/issues/4)
+
+**Merged pull requests:**
+
+- Feat/issue 3 osx support [\#5](https://github.com/elsesiy/GAppAuth/pull/5) ([elsesiy](https://github.com/elsesiy))
+
 ## [1.2.0](https://github.com/elsesiy/GAppAuth/tree/1.2.0) (2018-02-10)
 [Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.1.0...1.2.0)
 
