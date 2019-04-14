@@ -2,8 +2,7 @@
 //  AppDelegate.swift
 //  GAppAuth-macOS
 //
-//  Created by Jonas-Taha El Sesiy on 07.03.18.
-//  Copyright © 2018 Jonas-Taha El Sesiy. All rights reserved.
+//  Created by @elsesiy on 07.03.18.
 //
 
 import Cocoa
