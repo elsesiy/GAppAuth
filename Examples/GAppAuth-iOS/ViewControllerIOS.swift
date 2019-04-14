@@ -2,7 +2,7 @@
 //  ViewControllerIOS.swift
 //  GAppAuth-iOS
 //
-//  Created by El Sesiy, Jonas-Taha (624) on 12/20/18.
+//  Created by @elsesiy on 12/20/18.
 //
 
 import UIKit
