@@ -2,11 +2,22 @@
 
 ## [Unreleased](https://github.com/elsesiy/GAppAuth/tree/HEAD)
 
-[Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.3.0...HEAD)
+[Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.4.0...HEAD)
+
+## [1.4.0](https://github.com/elsesiy/GAppAuth/tree/1.4.0) (2019-04-14)
+[Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.3.0...1.4.0)
+
+**Implemented enhancements:**
+
+- Differentiate CFURLTypes in README [\#6](https://github.com/elsesiy/GAppAuth/issues/6)
 
 **Closed issues:**
 
 - Support for Mac OSX? [\#3](https://github.com/elsesiy/GAppAuth/issues/3)
+
+**Merged pull requests:**
+
+- Update podspec for Swift 5 and latest GTMAppAuth release [\#8](https://github.com/elsesiy/GAppAuth/pull/8) ([elsesiy](https://github.com/elsesiy))
 
 ## [1.3.0](https://github.com/elsesiy/GAppAuth/tree/1.3.0) (2018-12-21)
 [Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.2.0...1.3.0)
