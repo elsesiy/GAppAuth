@@ -12,7 +12,7 @@ Just add this dependency to your Podfile:
 
 `pod GAppAuth`  
 
-The transitive dependency to `GTMAppAuth` is added automatically.
+The transitive dependency to [GTMAppAuth](https://github.com/google/GTMAppAuth) is added automatically.
 
 ## Manually
 
