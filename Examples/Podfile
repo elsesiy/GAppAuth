@@ -6,11 +6,11 @@ def shared_pods
 end
 
 target "GAppAuth-iOS" do
-    platform :ios, '12.0'
+    platform :ios, '8.0'
     shared_pods
 end
 
 target "GAppAuth-macOS" do
-    platform :osx, '10.13'
+    platform :osx, '10.11'
     shared_pods
 end

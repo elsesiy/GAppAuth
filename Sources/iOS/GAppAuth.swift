@@ -116,7 +116,7 @@ public final class GAppAuth: NSObject {
             let request = OIDAuthorizationRequest(configuration: configuration!, clientId: GAppAuth.ClientId, scopes: self.scopes, redirectURL: redirectURI, responseType: OIDResponseTypeCode, additionalParameters: nil)
             
             // Store auth flow to be resumed after app reentry, serialize response
-            self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: presentingViewController) {(authState: OIDAuthState?, error: Error?) in
+            self.currentAuthorizationFlow = OIDAuthState.authState(byPresenting: request, presenting: presentingViewController) { authState, error in
                 var response = false
                 if let authState = authState {
                     
