@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.6.0](https://github.com/elsesiy/GAppAuth/tree/1.6.0) (2020-12-27)
+
+[Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.5.0...1.6.0)
+
+**Closed issues:**
+
+- Update dependencies [\#18](https://github.com/elsesiy/GAppAuth/issues/18)
+- authorize callback not called [\#15](https://github.com/elsesiy/GAppAuth/issues/15)
+- Subscribe to token change events? [\#14](https://github.com/elsesiy/GAppAuth/issues/14)
+- Redirection issue [\#12](https://github.com/elsesiy/GAppAuth/issues/12)
+- How do I refresh the idToken once it expired? [\#9](https://github.com/elsesiy/GAppAuth/issues/9)
+
+**Merged pull requests:**
+
+- Update dependencies & misc [\#19](https://github.com/elsesiy/GAppAuth/pull/19) ([elsesiy](https://github.com/elsesiy))
+
 ## [1.5.0](https://github.com/elsesiy/GAppAuth/tree/1.5.0) (2019-12-25)
 
 [Full Changelog](https://github.com/elsesiy/GAppAuth/compare/1.4.0...1.5.0)
@@ -12,6 +28,7 @@
 **Merged pull requests:**
 
 - Update underlying SDKs & other minor changes [\#11](https://github.com/elsesiy/GAppAuth/pull/11) ([elsesiy](https://github.com/elsesiy))
+- Feat/issue 3 osx support [\#5](https://github.com/elsesiy/GAppAuth/pull/5) ([elsesiy](https://github.com/elsesiy))
 
 ## [1.4.0](https://github.com/elsesiy/GAppAuth/tree/1.4.0) (2019-04-14)
 
