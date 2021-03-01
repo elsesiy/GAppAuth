@@ -37,7 +37,7 @@ class ViewControllerMacOS: NSViewController {
     
     @IBAction func click(_ sender: NSButton?) {
         do {
-            try GAppAuth.shared.authorize { auth in
+            try GAppAuth.shared.authorize { auth, err in
                 if auth {
                     if GAppAuth.shared.isAuthorized() {
                         let authorization = GAppAuth.shared.getCurrentAuthorization()
