@@ -92,7 +92,7 @@ public final class GAppAuth: NSObject {
     /// - parameter presentingViewController: The UIViewController that starts the workflow.
     /// - parameter callback: A completion callback to be used for further processing.
     @available(iOS 8.0, *)
-    public func authorize(in presentingViewController: UIViewController, callback: ((Bool) -> Void)?) throws {
+    public func authorize(in presentingViewController: UIViewController, callback: ((Bool, Error?) -> Void)?) throws {
         guard GAppAuth.RedirectUri != "" else {
             throw GAppAuthError.plistValueEmpty("The value for RedirectUri seems to be wrong, did you forget to set it up?")
         }
@@ -132,7 +132,7 @@ public final class GAppAuth: NSObject {
                 }
                 
                 if let callback = callback {
-                    callback(response)
+                    callback(response, error)
                 }
             }
         }

@@ -95,7 +95,7 @@ public final class GAppAuth: NSObject {
     ///
     /// - parameter callback: A completion callback to be used for further processing.
     @available(OSX 10.11, *)
-    public func authorize(callback: ((Bool) -> Void)?) throws {
+    public func authorize(callback: ((Bool, Error?) -> Void)?) throws {
         guard GAppAuth.RedirectUri != "" else {
             throw GAppAuthError.plistValueEmpty("The value for RedirectUri seems to be wrong, did you forget to set it up?")
         }
@@ -135,7 +135,7 @@ public final class GAppAuth: NSObject {
                 }
                 
                 if let callback = callback {
-                    callback(response)
+                    callback(response, error)
                 }
             }
         }

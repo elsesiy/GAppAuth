@@ -35,7 +35,7 @@ class ViewControllerIOS: UIViewController {
     
     @IBAction func login() {
         do {
-            try GAppAuth.shared.authorize(in: self) { auth in
+            try GAppAuth.shared.authorize(in: self) { auth, err in
                 if auth {
                     if GAppAuth.shared.isAuthorized() {
                         let authorization = GAppAuth.shared.getCurrentAuthorization()
